@@ -1,3 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+
+# Virtual environment
+venv/
+env/
+.venv/
 .venv
-.idea
+
+# Django
+*.log
+*.pot
+*.pyc
+staticfiles/
 db.sqlite3
+
+# VS Code
+.vscode/
+
+# Environment variables
+.env
+*.env
+
+# Migrations (optional – du kannst sie auch committen)
+# Wenn du sie behalten willst, kommentiere die nächste Zeile aus:
+ */migrations/*.py
+ !*/migrations/__init__.py
+
+# Byte-compiled
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+.idea/
