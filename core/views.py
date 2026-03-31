@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import *
@@ -12,6 +13,6 @@ class UserList(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class UserCreate(CreateAPIView):
+class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
