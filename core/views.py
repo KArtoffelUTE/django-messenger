@@ -22,8 +22,13 @@ class UserCreate(generics.CreateAPIView):
 class MessageViewset(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
-            return [AllowAny()]
-        return [IsAuthenticated()]
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(
+            models.Q(sender=user) | models.Q(recipient=user)
+        ).order_by('-timestamp')
