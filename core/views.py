@@ -10,14 +10,15 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.viewsets import ModelViewSet
 # Create your views here.
 
-class UserList(ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class UserCreate(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        else:
+            return [permissions.IsAuthenticated()]
 
 class MessageViewset(ModelViewSet):
     queryset = Message.objects.all()
