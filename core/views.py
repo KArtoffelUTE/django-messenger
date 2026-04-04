@@ -21,7 +21,7 @@ class UserViewSet(ModelViewSet):
             return [permissions.IsAuthenticated()]
 
 class MessageViewset(ModelViewSet):
-    queryset = Message.objects.all()
+    queryset = Message.objects.all().order_by('-timestamp')
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
 
