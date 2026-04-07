@@ -23,9 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)%ims!8jz3n+&kq4=9pn@i-f3q(*m^ok+=l8-(rk2(aht27(a6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'kartoffelute.pythonanywhere.com',
+    '127.0.0.1',
+    'localhost',
+    'wahl.ottohanien.de'
+]
 
 
 # Application definition
