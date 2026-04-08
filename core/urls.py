@@ -4,8 +4,14 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register('messages', MessageViewset, basename='message')
-router.register('users', UserViewSet, basename='user')
+router.register(r'conversations', ConversationViewset, basename='conversation')
+
+conversations_nested = [
+    path('<int:conversation_id>/messages/', MessageViewset.as_view({'get': 'list', 'post': 'create'})),
+    path('<int:conversation_id>/participants/', ConversationParticipantViewset.as_view({'get': 'list', 'post': 'create'})),
+]
+
 urlpatterns = [
     path('', include(router.urls)),
+    path('conversations/', include(conversations_nested)),
 ]

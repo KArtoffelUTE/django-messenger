@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Conversation(models.Model):
-    typ = models.TextField()
     name = models.TextField()
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conversations')
     timestamp = models.DateTimeField(auto_now_add=True)
