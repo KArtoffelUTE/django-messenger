@@ -23,3 +23,15 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = '__all__'
         read_only_fields = ['timestamp', 'updated_at', 'sender']
+
+class ConversationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conversation
+        fields = '__all__'
+        read_only_fields = ['timestamp', 'updated_at', 'creator']
+
+class ConversationParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConversationParticipant
+        fields = '__all__'
+        read_only_fields = ['conversation', 'user']
