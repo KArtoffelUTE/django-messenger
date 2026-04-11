@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from .models import *
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import PermissionDenied
+from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 # Create your views here.
 
@@ -50,12 +52,47 @@ class ConversationViewset(ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [IsAuthenticated]
+
     def perform_create(self, serializer):
-        conversation = serializer.save(creator=self.request.user)
-        ConversationParticipant.objects.create(
-            conversation=conversation,
-            user=self.request.user
-        )
+        participants = serializer.validated_data.pop("participants")
+        creator = self.request.user
+
+        # Creator immer hinzufügen
+        if creator.id not in participants:
+            participants.append(creator.id)
+
+        # DIRECT CHAT ERKENNUNG
+        if len(participants) == 2:
+            existing = (
+                Conversation.objects
+                .annotate(num_participants=models.Count("participants"))
+                .filter(num_participants=2, participants__user__id__in=participants)
+                .distinct()
+            )
+
+            # Prüfen, ob exakt diese zwei User drin sind
+            for convo in existing:
+                ids = list(convo.participants.values_list("user_id", flat=True))
+                if sorted(ids) == sorted(participants):
+                    # Conversation existiert → zurückgeben
+                    self.existing_conversation = convo
+                    return
+        # Neue Conversation erstellen
+        conversation = serializer.save(creator=creator)
+
+        # Participants anlegen
+        for user_id in participants:
+            ConversationParticipant.objects.create(
+                conversation=conversation,
+                user_id=user_id
+            )
+        self.existing_conversation = conversation
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        convo = self.existing_conversation
+        serializer = self.get_serializer(convo)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         user = self.request.user
